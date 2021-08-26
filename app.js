@@ -1,21 +1,17 @@
-
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require("cors");
 //const AppError = require('./utils/appError');
 const app = express();
 const globalErrorHandal = require('./controllers/erroeController');
 
 //set security HTTP headers
 app.use(helmet())
-//middle ware use
- // development logging
-if (process.env.Node_ENV === 'development') {
-    console.log("development");
-}
+app.use(cors())
 
 // global middleware use 
 const limiter = rateLimit({
@@ -45,6 +41,8 @@ app.use((req, res, next) => {
     res.requestTime = new Date().toISOString();
     next();
 });  
+
+app.use("/wallet", require("./routes/walletRouter"));
 // end route
 
 // middeware error handle not matching route
